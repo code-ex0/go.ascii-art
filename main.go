@@ -6,38 +6,43 @@ import (
 	"os"
 )
 
+type Alphabet struct {
+	LetterAscii [7]string
+	Letter      string
+	Next        *Alphabet
+}
+
 func main() {
 
+	alpha := getLetter()
 	i := len(os.Args)
 	if i >= 1 {
-		temp, _ := ioutil.ReadFile("standard.txt")
-		sentence := make([][10]string, 12)
-		sentence[0] = printLetter(temp, 'H'-32)
-		sentence[1] = printLetter(temp, 'e'-32)
-		sentence[2] = printLetter(temp, 'l'-32)
-		sentence[3] = printLetter(temp, 'l'-32)
-		sentence[4] = printLetter(temp, 'o'-32)
-		sentence[5] = printLetter(temp, ' '-32)
-		sentence[6] = printLetter(temp, 'W'-32)
-		sentence[7] = printLetter(temp, 'o'-32)
-		sentence[8] = printLetter(temp, 'r'-32)
-		sentence[9] = printLetter(temp, 'l'-32)
-		sentence[10] = printLetter(temp, 'd'-32)
-		sentence[11] = printLetter(temp, '!'-32)
+		sentence := make([][7]string, len(os.Args[1]))
+		for i := 0; i < len(sentence); i++ {
+			it := alpha
+			for it != nil {
+				if string(os.Args[1][i]) == it.Letter {
+					sentence[i] = it.LetterAscii
+				}
+				it = it.Next
+			}
+		}
 		printSentence(sentence)
 	}
 }
 
-func printLetter(text []byte, num int) (result [10]string) {
-	ligne := 0
-	i := 0
-	for _, letter := range text {
-		if letter == '\n' {
-			ligne++
+func printLetter(text []byte, num int) (result [7]string) {
+	line := -1
+	i := -1
+	for j := 0; j < len(text[1:]); j++ {
+		if text[j] == '\n' {
+			line++
 		}
-		if ligne/9 == num {
-			result[i] += string(letter)
-			if letter == '\n' {
+		if line/9 == num && line != -1 {
+			if string(text[j]) != "\n" && i <= 6 {
+				result[i] += string(text[j])
+			}
+			if text[j] == '\n' {
 				i++
 			}
 		}
@@ -45,7 +50,20 @@ func printLetter(text []byte, num int) (result [10]string) {
 	return
 }
 
-func printSentence(sentences [][10]string) {
+func getLetter() *Alphabet {
+	space := [7]string{"   ", "   ", "   ", "   ", "   ", "   ", "   "}
+	result := &Alphabet{LetterAscii: space, Letter: " "}
+	temp, _ := ioutil.ReadFile("standard.txt")
+	it := result
+	for i := ' ' - 31; i < '~'-32; i++ {
+		n := &Alphabet{LetterAscii: printLetter(temp, int(i)), Letter: string(i + 32)}
+		it.Next = n
+		it = it.Next
+	}
+	return result
+}
+
+func printSentence(sentences [][7]string) {
 	i := 0
 	for i < len(sentences[i]) {
 		j := 0
@@ -69,7 +87,7 @@ func printSentence(sentences [][10]string) {
 	}
 }
 
-func maxLensWord(s [10]string) (result int) {
+func maxLensWord(s [7]string) (result int) {
 
 	for _, word := range s {
 		maxLens := 0
