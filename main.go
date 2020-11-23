@@ -7,31 +7,22 @@ import (
 )
 
 type Alphabet struct {
-	LetterAscii [7]string
-	Letter      string
-	Next        *Alphabet
+	LetterAscii map[string][8]string
 }
 
 func main() {
-
-	alpha := getLetter()
+	alpha := getAlphabet()
 	i := len(os.Args)
 	if i >= 1 {
-		sentence := make([][7]string, len(os.Args[1]))
+		sentence := make([][8]string, len(os.Args[1]))
 		for i := 0; i < len(sentence); i++ {
-			it := alpha
-			for it != nil {
-				if string(os.Args[1][i]) == it.Letter {
-					sentence[i] = it.LetterAscii
-				}
-				it = it.Next
-			}
+			sentence[i] = alpha.LetterAscii[string(os.Args[1][i])]
 		}
 		printSentence(sentence)
 	}
 }
 
-func printLetter(text []byte, num int) (result [7]string) {
+func getLetter(text []byte, num int) (result [8]string) {
 	line := -1
 	i := -1
 	for j := 0; j < len(text[1:]); j++ {
@@ -39,7 +30,7 @@ func printLetter(text []byte, num int) (result [7]string) {
 			line++
 		}
 		if line/9 == num && line != -1 {
-			if string(text[j]) != "\n" && i <= 6 {
+			if string(text[j]) != "\n" && i <= 7 {
 				result[i] += string(text[j])
 			}
 			if text[j] == '\n' {
@@ -50,20 +41,19 @@ func printLetter(text []byte, num int) (result [7]string) {
 	return
 }
 
-func getLetter() *Alphabet {
-	space := [7]string{"   ", "   ", "   ", "   ", "   ", "   ", "   "}
-	result := &Alphabet{LetterAscii: space, Letter: " "}
+func getAlphabet() *Alphabet {
+	var n = make(map[string][8]string)
+	n[" "] = [8]string{"   ", "   ", "   ", "   ", "   ", "   ", "   ", "   "}
+	result := &Alphabet{LetterAscii: n}
 	temp, _ := ioutil.ReadFile("standard.txt")
-	it := result
 	for i := ' ' - 31; i < '~'-32; i++ {
-		n := &Alphabet{LetterAscii: printLetter(temp, int(i)), Letter: string(i + 32)}
-		it.Next = n
-		it = it.Next
+		result.LetterAscii[string(i+32)] = getLetter(temp, int(i))
+
 	}
 	return result
 }
 
-func printSentence(sentences [][7]string) {
+func printSentence(sentences [][8]string) {
 	i := 0
 	for i < len(sentences[i]) {
 		j := 0
@@ -87,8 +77,7 @@ func printSentence(sentences [][7]string) {
 	}
 }
 
-func maxLensWord(s [7]string) (result int) {
-
+func maxLensWord(s [8]string) (result int) {
 	for _, word := range s {
 		maxLens := 0
 		for _, letter := range word {
