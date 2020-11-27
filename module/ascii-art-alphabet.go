@@ -1,5 +1,10 @@
 package module
 
+import (
+	"io/ioutil"
+	"os"
+)
+
 type Alphabet struct {
 	LetterAscii map[string][8]string
 }
@@ -30,4 +35,20 @@ func GetAlphabet(file []byte) *Alphabet {
 		result.LetterAscii[string(i+32)] = getLetter(file, int(i))
 	}
 	return result
+}
+
+func GetFile() (result []byte) {
+	file := "standard.txt"
+	if len(os.Args) > 2 {
+		switch os.Args[2] {
+		case "standard":
+			file = "standard.txt"
+		case "shadow":
+			file = "shadow.txt"
+		case "thinkertoy":
+			file = "thinkertoy.txt"
+		}
+	}
+	result, _ = ioutil.ReadFile("file/" + file)
+	return
 }

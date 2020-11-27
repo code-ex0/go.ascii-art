@@ -1,26 +1,34 @@
 package module
 
 import (
-	"io/ioutil"
 	"os"
+	"strings"
 )
 
-func menu() {
-
+func SetParam() {
+	for _, i := range os.Args[1:] {
+		if strings.HasPrefix(i, "--") {
+			if strings.Contains(i, "color") {
+				Getcolor(i)
+			}
+		}
+	}
 }
 
-func GetFile() (result []byte) {
-	file := ""
-	switch os.Args[2] {
-	case "standard":
-		file = "Ascii.txt"
-	case "shadow":
-		file = "shadow.txt"
-	case "thinkertoy":
-		file = "thinkertoy.txt"
-	default:
-		file = "Ascii.txt"
+func Getcolor(s string) {
+	if strings.Contains(s, "red") {
+		color = colorRed
+	} else if strings.Contains(s, "green") {
+		color = colorGreen
+	} else if strings.Contains(s, "yellow") {
+		color = colorYellow
+	} else if strings.Contains(s, "blue") {
+		color = colorBlue
+	} else if strings.Contains(s, "purple") {
+		color = colorPurple
+	} else if strings.Contains(s, "cyan") {
+		color = colorCyan
+	} else if strings.Contains(s, "gray") {
+		color = colorGray
 	}
-	result, _ = ioutil.ReadFile("file/" + file)
-	return
 }
