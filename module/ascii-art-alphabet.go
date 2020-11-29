@@ -37,7 +37,7 @@ func GetAlphabet(file []byte) *Alphabet {
 	return result
 }
 
-func GetFile() (result []byte) {
+func GetAlphabetFile() (result []byte) {
 	file := "standard.txt"
 	if len(os.Args) > 2 {
 		switch os.Args[2] {
