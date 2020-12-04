@@ -9,11 +9,10 @@ import (
 
 func Menu(alphabet *Alphabet) {
 	types, param := getParam()
-	sentence := GetSentence(alphabet)
 	switch types {
 	case "color":
 		color := MapColor()
-		fmt.Print(color[param], sentence, "\u001b[0m")
+		fmt.Print(color[param], GetSentence(alphabet), "\u001b[0m")
 	case "output":
 		if strings.HasSuffix(param, ".txt") {
 			f, err := os.Create("output/" + param)
@@ -21,19 +20,19 @@ func Menu(alphabet *Alphabet) {
 				log.Fatal(err)
 			}
 			defer f.Close()
-			_, err2 := f.WriteString(sentence)
+			_, err2 := f.WriteString(GetSentence(alphabet))
 			if err2 != nil {
 				log.Fatal(err2)
 			}
 		}
 	default:
-		fmt.Print(sentence)
+		fmt.Print(GetSentence(alphabet))
 	}
 
 }
 
 func getParam() (types, result string) {
-	for _, i := range os.Args[1:] {
+	for _, i := range os.Args[2:] {
 		if strings.HasPrefix(i, "--") {
 			if strings.Contains(i, "color") {
 				result = i[index(i, "=")+1:]

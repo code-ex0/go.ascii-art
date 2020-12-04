@@ -3,41 +3,49 @@ package module
 import (
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 type Alphabet struct {
 	LetterAscii map[string][8]string
 }
 
-func getLetter(text []byte, num int) (result [8]string) {
-	line := -1
-	i := -1
-	for j := 0; j < len(text); j++ {
-		if text[j] == '\n' {
-			line++
-		}
-		if line/9 == num && line != -1 {
-			if string(text[j]) != "\n" && i <= 7 {
-				result[i] += string(text[j])
-			}
-			if text[j] == '\n' {
-				i++
-			}
+func getLetter(text []string, s string) [8]string {
+	var tableimprimeur [8]string
+	for i := 1; i < 9; i++ {
+		for _, letter := range s {
+			index := int(letter-32) * 9
+			tableimprimeur[i-1] = text[index+i]
 		}
 	}
-	return
+	return tableimprimeur
 }
 
-func GetAlphabet(file []byte) *Alphabet {
+func GetAlphabet(file []string) *Alphabet {
 	var n = make(map[string][8]string)
 	result := &Alphabet{LetterAscii: n}
 	for i := ' '; i < '~'; i++ {
-		result.LetterAscii[string(i)] = getLetter(file, int(i-32))
+		result.LetterAscii[string(i)] = getLetter(file, string(i))
 	}
 	return result
 }
 
-func GetAlphabetFile() (result []byte) {
+func GetSentence(alpha *Alphabet) (result string) {
+	args := os.Args[1]
+	sentence := make([][8]string, len(args))
+	for i := 0; i < len(sentence); i++ {
+		sentence[i] = alpha.LetterAscii[string(args[i])]
+	}
+	for i := 0; i < len(sentence[i]); i++ {
+		for j := 0; j < len(sentence); j++ {
+			result += sentence[j][i]
+		}
+		result += string('\n')
+	}
+	return
+}
+
+func GetAlphabetFile() (result []string) {
 	file := "standard.txt"
 	if len(os.Args) > 2 {
 		switch os.Args[2] {
@@ -49,6 +57,7 @@ func GetAlphabetFile() (result []byte) {
 			file = "thinkertoy.txt"
 		}
 	}
-	result, _ = ioutil.ReadFile("file/" + file)
-	return
+	temp, _ := os.Open("file/" + file)
+	temps, _ := ioutil.ReadAll(temp)
+	return strings.Split(string(temps), "\r\n")
 }
