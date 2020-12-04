@@ -10,15 +10,14 @@ type Alphabet struct {
 	LetterAscii map[string][8]string
 }
 
-func getLetter(text []string, s string) [8]string {
-	var tableimprimeur [8]string
+func getLetter(text []string, s string) (result [8]string) {
 	for i := 1; i < 9; i++ {
 		for _, letter := range s {
 			index := int(letter-32) * 9
-			tableimprimeur[i-1] = text[index+i]
+			result[i-1] = text[index+i]
 		}
 	}
-	return tableimprimeur
+	return
 }
 
 func GetAlphabet(file []string) *Alphabet {
