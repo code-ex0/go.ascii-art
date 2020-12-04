@@ -31,8 +31,8 @@ func getLetter(text []byte, num int) (result [8]string) {
 func GetAlphabet(file []byte) *Alphabet {
 	var n = make(map[string][8]string)
 	result := &Alphabet{LetterAscii: n}
-	for i := ' ' - 32; i < '~'-32; i++ {
-		result.LetterAscii[string(i+32)] = getLetter(file, int(i))
+	for i := ' '; i < '~'; i++ {
+		result.LetterAscii[string(i)] = getLetter(file, int(i-32))
 	}
 	return result
 }

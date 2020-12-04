@@ -13,7 +13,7 @@ func Menu(alphabet *Alphabet) {
 	switch types {
 	case "color":
 		color := MapColor()
-		fmt.Printf(color[param], sentence)
+		fmt.Print(color[param], sentence, "\u001b[0m")
 	case "output":
 		if strings.HasSuffix(param, ".txt") {
 			f, err := os.Create("output/" + param)
