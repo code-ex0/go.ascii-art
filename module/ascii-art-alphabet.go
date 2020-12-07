@@ -1,8 +1,11 @@
 package module
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -21,27 +24,56 @@ func getLetter(text []string, s string) (result [8]string) {
 }
 
 func GetAlphabet(file []string) *Alphabet {
-	var n = make(map[string][8]string)
-	result := &Alphabet{LetterAscii: n}
+	result := &Alphabet{LetterAscii: make(map[string][8]string)}
 	for i := ' '; i < '~'; i++ {
 		result.LetterAscii[string(i)] = getLetter(file, string(i))
 	}
 	return result
 }
 
-func GetSentence(alpha *Alphabet) (result string) {
+func GetSentence(alpha *Alphabet, Multyline bool) (result [8]string) {
 	args := os.Args[1]
+	LensCMD := GetLensCMD()
 	sentence := make([][8]string, len(args))
 	for i := 0; i < len(sentence); i++ {
 		sentence[i] = alpha.LetterAscii[string(args[i])]
 	}
 	for i := 0; i < len(sentence[i]); i++ {
+		num := 1
 		for j := 0; j < len(sentence); j++ {
-			result += sentence[j][i]
+			if (len(sentence[j][i])+len(result[i]))+(num*5) >= num*LensCMD-1 && Multyline {
+				result[i] += "\r"
+				num++
+			}
+			result[i] += sentence[j][i]
 		}
-		result += string('\n')
+		result[i] += "\n"
 	}
 	return
+}
+
+func GetLensCMD() int {
+	Out, Err := exec.Command("ScriptBat\\widthcmd.bat").Output()
+	var ScrnLen int
+	if Err == nil {
+		OutS := strings.Split(string(Out), "\r\n")
+		if len(OutS) >= 3 {
+			ScrnLen, _ = strconv.Atoi(OutS[2])
+		}
+	}
+	return ScrnLen
+}
+
+func PrintSentence(sentence [8]string) {
+	for i := 0; i < strings.Count(sentence[0], "\r")+1; i++ {
+		for j := 0; j < len(sentence); j++ {
+			temp := strings.Split(sentence[j], "\r")
+			fmt.Print(temp[i])
+			if !strings.ContainsAny(temp[i], "\n") {
+				fmt.Println()
+			}
+		}
+	}
 }
 
 func GetAlphabetFile() (result []string) {

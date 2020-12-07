@@ -12,7 +12,9 @@ func Menu(alphabet *Alphabet) {
 	switch types {
 	case "color":
 		color := MapColor()
-		fmt.Print(color[param], GetSentence(alphabet), "\u001b[0m")
+		fmt.Print(color[param])
+		PrintSentence(GetSentence(alphabet, true))
+		fmt.Print("\u001b[0m")
 	case "output":
 		if strings.HasSuffix(param, ".txt") {
 			f, err := os.Create("output/" + param)
@@ -20,13 +22,18 @@ func Menu(alphabet *Alphabet) {
 				log.Fatal(err)
 			}
 			defer f.Close()
-			_, err2 := f.WriteString(GetSentence(alphabet))
+			_, err2 := f.WriteString("rere")
 			if err2 != nil {
 				log.Fatal(err2)
 			}
 		}
+	case "reverse":
+		if strings.HasSuffix(param, ".txt") {
+
+		}
+
 	default:
-		fmt.Print(GetSentence(alphabet))
+		PrintSentence(GetSentence(alphabet, true))
 	}
 
 }
@@ -41,6 +48,10 @@ func getParam() (types, result string) {
 			if strings.Contains(i, "output") {
 				result = i[index(i, "=")+1:]
 				types = "output"
+			}
+			if strings.Contains(i, "reverse") {
+				result = i[index(i, "=")+1:]
+				types = "reverse"
 			}
 		}
 	}
