@@ -1,7 +1,6 @@
 package module
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -42,7 +41,7 @@ func GetSentence(alpha *Alphabet, Multyline bool) (result [8]string) {
 		num := 1
 		for j := 0; j < len(sentence); j++ {
 			if (len(sentence[j][i])+len(result[i]))+(num*5) >= num*LensCMD-1 && Multyline {
-				result[i] += "\r"
+				result[i] += "\a"
 				num++
 			}
 			result[i] += sentence[j][i]
@@ -64,16 +63,17 @@ func GetLensCMD() int {
 	return ScrnLen
 }
 
-func PrintSentence(sentence [8]string) {
-	for i := 0; i < strings.Count(sentence[0], "\r")+1; i++ {
+func PrintSentence(sentence [8]string) (result string) {
+	for i := 0; i < strings.Count(sentence[0], "\a")+1; i++ {
 		for j := 0; j < len(sentence); j++ {
-			temp := strings.Split(sentence[j], "\r")
-			fmt.Print(temp[i])
+			temp := strings.Split(sentence[j], "\a")
+			result += temp[i]
 			if !strings.ContainsAny(temp[i], "\n") {
-				fmt.Println()
+				result += "\n"
 			}
 		}
 	}
+	return
 }
 
 func GetAlphabetFile() (result []string) {
