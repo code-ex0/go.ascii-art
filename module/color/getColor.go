@@ -1,4 +1,4 @@
-package module
+package color
 
 func MapColor() (a map[string]string) {
 	a = make(map[string]string)

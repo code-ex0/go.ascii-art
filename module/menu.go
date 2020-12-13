@@ -2,16 +2,21 @@ package module
 
 import (
 	"./align"
+	"./color"
+	"./output"
+	"./reverse"
+	"./struct"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
 )
 
-func Menu(alphabet *Alphabet) {
+func Menu(alphabet *_struct.Alphabet) {
 	param := getParam()
 	if v, found := param["color"]; found {
-		color := MapColor()
-		align.Align(color[strings.ToLower(v)], PrintSentence(GetSentence(alphabet, true)), func() (result string) {
+		mapColor := color.MapColor()
+		align.Align(mapColor[strings.ToLower(v)], PrintSentence(GetSentence(alphabet, true)), func() (result string) {
 			if v, found := param["align"]; found {
 				result = v
 			} else {
@@ -25,19 +30,18 @@ func Menu(alphabet *Alphabet) {
 		}, GetLensCMD())
 	} else if v, found := param["output"]; found {
 		if strings.HasSuffix(v, ".txt") {
-			f, err := os.Create("output/" + v)
+			output.Output(v, GetSentence(alphabet, false))
+		}
+	} else if v, found := param["reverse"]; found {
+		if strings.HasSuffix(v, ".txt") {
+			f, err := os.Open("output/" + v)
 			if err != nil {
 				log.Fatal(err)
 			}
 			defer f.Close()
-			for _, letter := range GetSentence(alphabet, false) {
-				_, err2 := f.WriteString(letter)
-				if err2 != nil {
-					log.Fatal(err2)
-				}
-			}
+			temp, _ := ioutil.ReadAll(f)
+			reverse.Reverse(strings.Split(string(temp), "\r\n"), alphabet)
 		}
-	} else if _, found := param["reverse"]; found {
 	} else {
 		align.Align("\u001b[38m", PrintSentence(GetSentence(alphabet, true)), func() string {
 			return "left"
@@ -47,7 +51,7 @@ func Menu(alphabet *Alphabet) {
 
 func getParam() map[string]string {
 	param := make(map[string]string)
-	for _, i := range os.Args[2:] {
+	for _, i := range os.Args[1:] {
 		if strings.HasPrefix(i, "--") {
 			if strings.Contains(i, "color") {
 				param["color"] = i[index(i, "=")+1:]

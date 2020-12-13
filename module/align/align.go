@@ -10,6 +10,8 @@ func Align(color string, sentence string, align func() string, sizeCmd int) {
 		center(color, sentence, sizeCmd)
 	case "justify":
 		justify(color, sentence, sizeCmd)
+	default:
+		left(color, sentence)
 	}
 }
 

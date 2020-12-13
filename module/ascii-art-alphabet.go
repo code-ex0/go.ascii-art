@@ -1,16 +1,12 @@
 package module
 
 import (
-	"io/ioutil"
+	"./struct"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 )
-
-type Alphabet struct {
-	LetterAscii map[string][8]string
-}
 
 func getLetter(text []string, s string) (result [8]string) {
 	for i := 1; i < 9; i++ {
@@ -22,15 +18,15 @@ func getLetter(text []string, s string) (result [8]string) {
 	return
 }
 
-func GetAlphabet(file []string) *Alphabet {
-	result := &Alphabet{LetterAscii: make(map[string][8]string)}
+func GetAlphabet(file []string) (result *_struct.Alphabet) {
+	result = &_struct.Alphabet{LetterAscii: make(map[string][8]string)}
 	for i := ' '; i < '~'; i++ {
 		result.LetterAscii[string(i)] = getLetter(file, string(i))
 	}
-	return result
+	return
 }
 
-func GetSentence(alpha *Alphabet, Multyline bool) (result [8]string) {
+func GetSentence(alpha *_struct.Alphabet, Multyline bool) (result [8]string) {
 	args := os.Args[1]
 	LensCMD := GetLensCMD()
 	sentence := make([][8]string, len(args))
@@ -51,16 +47,18 @@ func GetSentence(alpha *Alphabet, Multyline bool) (result [8]string) {
 	return
 }
 
-func GetLensCMD() int {
+func GetLensCMD() (ScrnLen int) {
 	Out, Err := exec.Command("ScriptBat\\widthcmd.bat").Output()
-	var ScrnLen int
 	if Err == nil {
 		OutS := strings.Split(string(Out), "\r\n")
 		if len(OutS) >= 3 {
 			ScrnLen, _ = strconv.Atoi(OutS[2])
 		}
 	}
-	return ScrnLen
+	if ScrnLen < 48 {
+		return 48
+	}
+	return
 }
 
 func PrintSentence(sentence [8]string) (result string) {
@@ -74,21 +72,4 @@ func PrintSentence(sentence [8]string) (result string) {
 		}
 	}
 	return
-}
-
-func GetAlphabetFile() (result []string) {
-	file := "standard.txt"
-	if len(os.Args) > 2 {
-		switch os.Args[2] {
-		case "standard":
-			file = "standard.txt"
-		case "shadow":
-			file = "shadow.txt"
-		case "thinkertoy":
-			file = "thinkertoy.txt"
-		}
-	}
-	temp, _ := os.Open("file/" + file)
-	temps, _ := ioutil.ReadAll(temp)
-	return strings.Split(string(temps), "\r\n")
 }

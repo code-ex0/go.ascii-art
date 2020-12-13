@@ -1,22 +1,52 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"strconv"
+)
 
 func main() {
-	fmt.Print(numberSpace(2, 186, 124))
+	param := os.Args
+	if len(param) == 3 {
+		x, _ := strconv.Atoi(param[1])
+		y, _ := strconv.Atoi(param[2])
+		if !(y <= 0 || x <= 0) {
+			getHead(x)
+			getBody(x, y)
+			if y >= 2 {
+				getHead(x)
+			}
+		} else {
+			fmt.Println("not possible...")
+		}
+	} else {
+		fmt.Println("incomplete...")
+	}
 }
 
-func numberSpace(numbersSpace int, sizeCmd int, sizeSentence int) []int {
-	var result = make([]int, numbersSpace)
-	allSpace := sizeCmd - sizeSentence
-	for i := 0; i < numbersSpace; i++ {
-		temp := allSpace / numbersSpace
-		if allSpace%numbersSpace != 0 {
-			result[i] = temp + 1
-			allSpace--
-		} else {
-			result[i] = temp
+func getHead(sizex int) {
+	fmt.Print("x")
+	if sizex > 1 {
+		for i := 0; i < sizex-2; i++ {
+			fmt.Print("-")
 		}
+		fmt.Print("x")
 	}
-	return result
+	fmt.Print("\n")
+}
+
+func getBody(sizex, sizey int) {
+	k := sizey - 2
+	for i := 0; i < sizey-2; i++ {
+		fmt.Print(i)
+		if sizex > 1 {
+			for j := 0; j < sizex-2; j++ {
+				fmt.Print(" ")
+			}
+			fmt.Print(k)
+			k--
+		}
+		fmt.Print("\n")
+	}
 }
