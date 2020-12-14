@@ -2,7 +2,6 @@ package module
 
 import (
 	"./struct"
-	"os"
 	"os/exec"
 	"strconv"
 	"strings"
@@ -26,8 +25,7 @@ func GetAlphabet(file []string) (result *_struct.Alphabet) {
 	return
 }
 
-func GetSentence(alpha *_struct.Alphabet, Multyline bool) (result [8]string) {
-	args := os.Args[1]
+func GetSentence(alpha *_struct.Alphabet, Multiline bool, args string) (result [8]string) {
 	LensCMD := GetLensCMD()
 	sentence := make([][8]string, len(args))
 	for i := 0; i < len(sentence); i++ {
@@ -36,7 +34,7 @@ func GetSentence(alpha *_struct.Alphabet, Multyline bool) (result [8]string) {
 	for i := 0; i < len(sentence[i]); i++ {
 		num := 1
 		for j := 0; j < len(sentence); j++ {
-			if (len(sentence[j][i])+len(result[i]))+(num*5) >= num*LensCMD-1 && Multyline {
+			if (len(sentence[j][i])+len(result[i]))+(num*10) >= num*LensCMD-1 && Multiline {
 				result[i] += "\a"
 				num++
 			}
@@ -47,15 +45,15 @@ func GetSentence(alpha *_struct.Alphabet, Multyline bool) (result [8]string) {
 	return
 }
 
-func GetLensCMD() (ScrnLen int) {
+func GetLensCMD() (ScreenLen int) {
 	Out, Err := exec.Command("ScriptBat\\widthcmd.bat").Output()
 	if Err == nil {
 		OutS := strings.Split(string(Out), "\r\n")
 		if len(OutS) >= 3 {
-			ScrnLen, _ = strconv.Atoi(OutS[2])
+			ScreenLen, _ = strconv.Atoi(OutS[2])
 		}
 	}
-	if ScrnLen < 48 {
+	if ScreenLen < 48 {
 		return 48
 	}
 	return

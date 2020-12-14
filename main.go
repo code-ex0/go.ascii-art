@@ -2,12 +2,15 @@ package main
 
 import (
 	"./module"
-	"./module/fs"
 	"os"
 )
 
 func main() {
-	if len(os.Args) >= 2 {
-		module.Menu(module.GetAlphabet(fs.GetAlphabetFile()))
+	param := os.Args
+	if len(param) >= 2 {
+		param = param[1:]
+		module.Start(param)
+	} else {
+		module.Menu()
 	}
 }

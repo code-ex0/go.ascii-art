@@ -38,13 +38,13 @@ func spaceDetection(board []string) []string {
 	for i := 0; i < len(board[0])-7; i++ {
 		temp := true
 		for _, l := range board {
-			if !index(l[i:i+7], "      ") {
+			if !index(l[i:i+6], "     ") {
 				temp = false
 			}
 		}
 		if temp {
 			for j := 0; j < len(board); j++ {
-				board[j] = board[j][:i] + "\t" + board[j][i+7:]
+				board[j] = board[j][:i] + "\t" + board[j][i+6:]
 			}
 			i += 7
 		}

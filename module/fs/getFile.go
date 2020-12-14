@@ -6,10 +6,10 @@ import (
 	"strings"
 )
 
-func GetAlphabetFile() (result []string) {
+func GetAlphabetFile(args []string) (result []string) {
 	file := "standard.txt"
-	if len(os.Args) > 2 {
-		switch os.Args[2] {
+	if len(args) > 1 {
+		switch args[1] {
 		case "standard":
 			file = "standard.txt"
 		case "shadow":
@@ -20,5 +20,6 @@ func GetAlphabetFile() (result []string) {
 	}
 	temp, _ := os.Open("file/" + file)
 	temps, _ := ioutil.ReadAll(temp)
+	temp.Close()
 	return strings.Split(string(temps), "\r\n")
 }
