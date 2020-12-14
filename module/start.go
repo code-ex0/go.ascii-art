@@ -56,26 +56,17 @@ func getParam(args []string) map[string]string {
 	for _, i := range args {
 		if strings.HasPrefix(i, "--") {
 			if strings.Contains(i, "color") {
-				param["color"] = i[index(i, "=")+1:]
+				param["color"] = i[strings.Index(i, "=")+1:]
 			} else if strings.Contains(i, "output") {
-				param["output"] = i[index(i, "=")+1:]
+				param["output"] = i[strings.Index(i, "=")+1:]
 			} else if strings.Contains(i, "reverse") {
-				param["reverse"] = i[index(i, "=")+1:]
+				param["reverse"] = i[strings.Index(i, "=")+1:]
 			} else if strings.Contains(i, "align") {
-				param["align"] = i[index(i, "=")+1:]
+				param["align"] = i[strings.Index(i, "=")+1:]
 			}
 		}
 	}
 	return param
-}
-
-func index(s string, toFind string) int {
-	for i := 0; i < len(s)-len(toFind); i++ {
-		if s[i:i+len(toFind)] == toFind {
-			return i
-		}
-	}
-	return -1
 }
 
 func autoDetectTypeFile(file string) []string {
