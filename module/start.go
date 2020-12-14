@@ -81,7 +81,7 @@ func autoDetectTypeFile(file string) []string {
 			standard = false
 			shadow = false
 		}
-		if l == ',' {
+		if l == ',' || l == ')' || l == 'V' || l == '/' {
 			thinkertoy = false
 			shadow = false
 		}
