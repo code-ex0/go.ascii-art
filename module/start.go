@@ -71,23 +71,27 @@ func getParam(args []string) map[string]string {
 
 func autoDetectTypeFile(file string) []string {
 	temp, _ := os.Open("output/" + file)
-	standard := true
-	shadow := true
-	thinkertoy := true
+	standard := false
+	shadow := false
+	thinkertoy := false
 	temps, _ := ioutil.ReadAll(temp)
 	temp.Close()
-	for _, l := range temps {
-		if l == 'o' {
+	for i := 0; i < len(temps)-1; i++ {
+		if temps[i] == 'o' || temps[i] == '-' {
+			shadow = false
 			standard = false
+			thinkertoy = true
+		} else if temps[i] == ',' || temps[i] == ')' || temps[i] == '(' || temps[i] == 'V' || temps[i] == '/' || temps[i] == '\\' || temps[i] == '<' || temps[i] == '>' {
 			shadow = false
-		}
-		if l == ',' || l == ')' || l == 'V' || l == '/' {
 			thinkertoy = false
-			shadow = false
+			standard = true
+		} else if temps[i] == '_' || temps[i+1] == '|' {
+			thinkertoy = false
+			shadow = true
 		}
 	}
 	var typefile string
-	if standard && !shadow {
+	if standard {
 		typefile = "standard.txt"
 	} else if shadow {
 		typefile = "shadow.txt"

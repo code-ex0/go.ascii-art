@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 	"strconv"
 	"strings"
 	"time"
@@ -27,8 +28,6 @@ func Menu() {
 		} else if result == "e" {
 			break
 		}
-		fmt.Print("result : \n")
-
 	}
 	return
 }
@@ -285,7 +284,6 @@ func indexingFiles(directory string) map[string]string {
 			files[strconv.Itoa(num)] = f.Name()
 			num++
 		}
-
 	}
 	files[strconv.Itoa(num)] = "exit"
 	fmt.Print("╓────────────────────────────────────╖\n" +
@@ -308,6 +306,7 @@ func input(text string) string {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Print(text, " : ")
 	scanner.Scan()
+	cls()
 	return scanner.Text()
 }
 
@@ -333,4 +332,10 @@ func cat(file string) {
 		fmt.Println("ERROR: " + err.Error())
 	}
 	fmt.Print(string(temp))
+}
+
+func cls() {
+	cmd := exec.Command("cmd", "/c", "cls")
+	cmd.Stdout = os.Stdout
+	_ = cmd.Run()
 }
